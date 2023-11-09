@@ -6,6 +6,8 @@ const UserName = document.getElementById('add-form-name');
 
 const UserComment = document.getElementById('add-form-text');
 
+const preLoaderText = document.getElementById("pre-loader");
+
 let UserLikes = 0;
 
 const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/saifuddinov-aliakbar/comments",{
@@ -109,6 +111,39 @@ fetch("https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", {
 likes();
 initReplayClickListener();
 
+preLoaderText.textContent = "Загрузка комментариев ...";
+
+const getFetchApi = () => {
+  return fetch(
+    "https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments",
+    {
+      method: "GET",
+    }
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((response) => {
+      const getApiComments = response.comments.map((comment) => {
+        return {
+          author: comment.author.name,
+          date: dateString,
+          likes: comment.likes,
+          isLiked: false,
+          text: comment.text,
+        };
+      });
+      Users = getApiComments;
+      renderComments();
+    })
+    .then((response) => {
+      preLoaderText.textContent = "";
+      preLoaderText.classList.remove("margin");
+          });
+      };
+
+getFetchApi();
+
 ButtonElement.addEventListener("click", () => {
     UserName.style.backgroundColor = "white";
     UserComment.style.backgroundColor = "white";
@@ -121,35 +156,30 @@ ButtonElement.addEventListener("click", () => {
         UserComment.placeholder = "Пожалуйста заполните это поле";
     }
     else{
+
+      preLoaderText.textContent = "Комментарий публикуется...";
       fetch("https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", {
-				method: "POST",
-				body: JSON.stringify({
-					name: UserName.value
-					.replaceAll("<", "&lt;")
-      		.replaceAll(">", "&gt;"),
-					text: UserComment.value
-					.replaceAll("<", "&lt;")
-      		.replaceAll(">", "&gt;"),
-				}),
-			}).then((response) => {
-				response.json().then((responseData) => {})})
-        fetch("https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", {
-      method: "GET",
-    }).then((response) => {
-      response.json().then((responseData) => {
-        const getApiComments = responseData.comments.map((comment) => {
-          return {
-            author: comment.author.name,
-            date: dateString,
-            likes: comment.likes,
-            isLiked: false,
-            text: comment.text,
-          };
-        });
-        Users = getApiComments;
-				renderComments();
-				});
-			});		
+      method: "POST",
+      body: JSON.stringify({
+        name: UserName.value
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;"),
+        text: UserComment.value
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;"),
+      }),
+        }).then((response) => {
+          return response.json();
+        })
+        .then((responseData) => {
+        return fetch(
+            "https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", 
+            {
+        method: "GET",
+        }).then((response) => {
+        return getFetchApi();
+      });
+    });
         UserName.value = '';
         UserComment.value = '';
     }
