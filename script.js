@@ -8,6 +8,21 @@ const UserComment = document.getElementById('add-form-text');
 
 let UserLikes = 0;
 
+const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/saifuddinov-aliakbar/comments",{
+    method:"GET",
+  });
+console.log(fetchPromise);
+
+fetchPromise.then((response) =>  {
+  console.log(response);
+
+  const jsonPromise = response.json();
+
+  jsonPromise.then((responseData) => {
+    console.log(responseData);
+  })
+})
+
 const currentDate = new Date();
 const dateString = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()} `;
 
