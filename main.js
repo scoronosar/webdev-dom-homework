@@ -8,6 +8,14 @@ const UserComment = document.getElementById('add-form-text');
 
 const preLoaderText = document.getElementById("pre-loader");
 
+const likeButtons = document.querySelectorAll('.like-button');
+
+const commentsToAnswer = document.querySelectorAll('.comment');
+
+import {renderComments} from './render-comments.js';
+import {likes} from './likes.js';
+import {initReplayClickListener} from './replay.js';
+
 let UserLikes = 0;
 
 const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/saifuddinov-aliakbar/comments",{
@@ -32,65 +40,10 @@ const dateString = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTi
 
 let Users = [];
 
-const likes = () => {
-    const likeButtons = document.querySelectorAll('.like-button');
-    for (const likeButton of likeButtons) {
-      likeButton.addEventListener('click', (event) => {
-        const index = likeButton.dataset.index;
-        event.stopPropagation();
-        if (Users[index].userLike === false ) {
-            Users[index].paint = '-active-like';
-            Users[index].likes += 1;
-            Users[index].userLike = true;
-        } else {
-            Users[index].paint = '';
-            Users[index].likes -= 1;
-            Users[index].userLike = false;
-        }
-        renderComments();
-      });
-    };
-  };
-
   likes();
-
-const renderComments = () => {
-        const UsersHTML = Users.map((item, index) => {
-            return `
-        <li class="comment" data-username="${item.name}" data-text="${item.comment}">
-          <div class="comment-header">
-            <div>${item.author}</div>
-            <div>${item.date}</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              ${item.text}
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">${item.likes}</span>
-              <button data-index='${index}' class="like-button ${item.paint}"</button>
-            </div>
-          </div>
-        </li>
-    `})
-            .join('');
-            ListElement.innerHTML = UsersHTML;
-            likes();
-};
 
 renderComments();
 
-const initReplayClickListener = () => {
-    const commentsToAnswer = document.querySelectorAll('.comment');
-    for (const commentToAnswer of commentsToAnswer) {
-      commentToAnswer.addEventListener("click", () => {
-        const index = commentToAnswer.dataset.index;
-        UserComment.value = `${Users[index].comment}\n${Users[index].name},\n`;
-      });
-    }
-  }
 
 fetch("https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", {
   method: "GET",
@@ -208,3 +161,5 @@ ButtonElement.addEventListener("click", () => {
         likes();
         initReplayClickListener();
 });
+
+export{ListElement, UserName, UserComment, likeButtons, commentsToAnswer, Users};
