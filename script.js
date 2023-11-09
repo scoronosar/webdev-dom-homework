@@ -9,7 +9,9 @@ const UserComment = document.getElementById('add-form-text');
 let UserLikes = 0;
 
 const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/saifuddinov-aliakbar/comments",{
+
     method:"GET",
+    
   });
 console.log(fetchPromise);
 
