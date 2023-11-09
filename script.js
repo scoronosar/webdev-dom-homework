@@ -52,6 +52,8 @@ const likes = () => {
     };
   };
 
+  likes();
+
 const renderComments = () => {
         const UsersHTML = Users.map((item, index) => {
             return `
@@ -155,33 +157,52 @@ ButtonElement.addEventListener("click", () => {
         UserComment.style.backgroundColor = "red";
         UserComment.placeholder = "Пожалуйста заполните это поле";
     }
+    else if (UserName.value.length < 3 || UserComment.value.length < 3){
+      alert("используйте в комментариях и в имени более двух символов")
+    }
     else{
-
       preLoaderText.textContent = "Комментарий публикуется...";
       fetch("https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", {
-      method: "POST",
-      body: JSON.stringify({
-        name: UserName.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;"),
-        text: UserComment.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;"),
-      }),
-        }).then((response) => {
-          return response.json();
+        method: "POST",
+        body: JSON.stringify({
+          name: UserName.value
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;"),
+          text: UserComment.value
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;"),
+        }),
         })
+
         .then((responseData) => {
-        return fetch(
+          return fetch(
             "https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", 
             {
-        method: "GET",
-        }).then((response) => {
-        return getFetchApi();
+              method: "GET",
+            })
+        .then((response) => {
+          console.log(response.status);
+          if (response.status === 400) {
+            preLoaderText.textContent = "";
+            throw new Error(alert("Имя и комментарий должны быть длиннее 3 символов"));
+          } 
+          else {
+            UserName.value = '';
+            UserComment.value = '';
+            return getFetchApi();
+          }
+          })
+          .catch((error) => {
+            if (error === "TypeError: Failed to fetch") {
+              preLoaderText.textContent = "";
+              alert("Проблемы с интернетом");
+            }
+            else {
+              ButtonElement.disabled = false;
+              console.warn(error);
+            }
       });
     });
-        UserName.value = '';
-        UserComment.value = '';
     }
         renderComments();
         likes();
