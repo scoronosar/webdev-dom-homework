@@ -33,8 +33,9 @@ const Users = [
 const likes = () => {
     const likeButtons = document.querySelectorAll('.like-button');
     for (const likeButton of likeButtons) {
-      likeButton.addEventListener('click', () => {
+      likeButton.addEventListener('click', (event) => {
         const index = likeButton.dataset.index;
+        event.stopPropagation();
         if (Users[index].userLike === false ) {
             Users[index].paint = '-active-like';
             Users[index].likes += 1;
@@ -52,7 +53,7 @@ const likes = () => {
 const renderComments = () => {
     const UsersHTML = Users.map((user, index) =>{
       return `
-      <li class="comment">
+      <li class="comment" data-index='${index}'>
             <div class="comment-header">
               <div>${user.name}</div>
               <div>${user.date}</div>
@@ -66,7 +67,6 @@ const renderComments = () => {
               <div class="likes">
                 <span data-index='${index}'  class="likes-counter">${user.likes}</span>
                 <button data-index='${index}' class="like-button ${user.paint}"</button>
-                <button data-index='${index}' class = "edit-button">Редактировать</button>
               </div>
             </div>
           </li>
@@ -78,25 +78,18 @@ const renderComments = () => {
 
 renderComments();
 
-const initEditButtonListener = () => {
-
-    const EditButtonElements = document.querySelectorAll('.edit-button');
-
-    for (const EditButtonElement of EditButtonElements){
-        EditButtonElement.addEventListener('click', () =>{
-            const index = EditButtonElement.dataset.index;
-            UserName.value = Users[index].name;
-            UserComment.value = Users[index].comment;
-            UserLikes = Users[index].likes;
-            Users.splice(index, 1);
-            renderComments();
-        })
+const initReplayClickListener = () => {
+    const commentsToAnswer = document.querySelectorAll('.comment');
+    for (const commentToAnswer of commentsToAnswer) {
+      commentToAnswer.addEventListener("click", () => {
+        const index = commentToAnswer.dataset.index;
+        UserComment.value = `${Users[index].comment}\n${Users[index].name},\n`;
+      });
     }
-};
+  }
 
-initEditButtonListener();
 likes();
-
+initReplayClickListener();
 
 ButtonElement.addEventListener("click", () => {
     UserName.style.backgroundColor = "white";
@@ -111,15 +104,21 @@ ButtonElement.addEventListener("click", () => {
     }
     else{
         Users.push({
-            name: UserName.value,
-            comment: UserComment.value,
+            name: UserName.value
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;"),
+            comment: UserComment.value
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;"),
             date: dateString,
             likes: UserLikes,
             userLike: false,
             paint: '',
         })
+        UserName.value = '';
+        UserComment.value = '';
     }
         renderComments();
-        initEditButtonListener();
         likes();
+        initReplayClickListener();
 });
