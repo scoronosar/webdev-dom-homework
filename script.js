@@ -11,7 +11,7 @@ let UserLikes = 0;
 const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/saifuddinov-aliakbar/comments",{
 
     method:"GET",
-    
+
   });
 console.log(fetchPromise);
 
@@ -28,24 +28,7 @@ fetchPromise.then((response) =>  {
 const currentDate = new Date();
 const dateString = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()} `;
 
-const Users = [
-    {
-        name: 'Глеб Фокин',
-        comment: 'Это будет первый комментарий на этой странице',
-        date: '12.02.22 12:18',
-        likes:3,
-        userLike: false,
-        paint: ''
-    },
-    {
-        name: 'Варвара Н.',
-        comment: 'Мне нравится как оформлена эта страница! ❤',
-        date: '13.02.22 19:22',
-        likes:75,
-        userLike: true,
-        paint: '-active-like'
-    }
-];
+let Users = [];
 
 const likes = () => {
     const likeButtons = document.querySelectorAll('.like-button');
@@ -68,30 +51,30 @@ const likes = () => {
   };
 
 const renderComments = () => {
-    const UsersHTML = Users.map((user, index) =>{
-      return `
-      <li class="comment" data-index='${index}'>
-            <div class="comment-header">
-              <div>${user.name}</div>
-              <div>${user.date}</div>
+        const UsersHTML = Users.map((item, index) => {
+            return `
+        <li class="comment" data-username="${item.name}" data-text="${item.comment}">
+          <div class="comment-header">
+            <div>${item.author}</div>
+            <div>${item.date}</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              ${item.text}
             </div>
-            <div class="comment-body">
-              <div class="comment-text">
-                ${user.comment}
-              </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">${item.likes}</span>
+              <button data-index='${index}' class="like-button ${item.paint}"</button>
             </div>
-            <div class="comment-footer">
-              <div class="likes">
-                <span data-index='${index}'  class="likes-counter">${user.likes}</span>
-                <button data-index='${index}' class="like-button ${user.paint}"</button>
-              </div>
-            </div>
-          </li>
-      `})
-      .join('');
-      ListElement.innerHTML = UsersHTML;
-      likes();
-  };
+          </div>
+        </li>
+    `})
+            .join('');
+            ListElement.innerHTML = UsersHTML;
+            likes();
+};
 
 renderComments();
 
@@ -104,6 +87,24 @@ const initReplayClickListener = () => {
       });
     }
   }
+
+fetch("https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", {
+  method: "GET",
+}).then((response) => {
+  response.json().then((responseData) => {
+    const getApiComments = responseData.comments.map((comment) => {
+      return {
+        author: comment.author.name,
+        date: dateString,
+        likes: comment.likes,
+        isLiked: false,
+        text: comment.text,
+      };
+    });
+    Users = getApiComments;
+    renderComments();
+    });
+  });
 
 likes();
 initReplayClickListener();
@@ -120,18 +121,35 @@ ButtonElement.addEventListener("click", () => {
         UserComment.placeholder = "Пожалуйста заполните это поле";
     }
     else{
-        Users.push({
-            name: UserName.value
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;"),
-            comment: UserComment.value
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;"),
+      fetch("https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", {
+				method: "POST",
+				body: JSON.stringify({
+					name: UserName.value
+					.replaceAll("<", "&lt;")
+      		.replaceAll(">", "&gt;"),
+					text: UserComment.value
+					.replaceAll("<", "&lt;")
+      		.replaceAll(">", "&gt;"),
+				}),
+			}).then((response) => {
+				response.json().then((responseData) => {})})
+        fetch("https://wedev-api.sky.pro/api/v1/sayfiddinov-aliakbar/comments", {
+      method: "GET",
+    }).then((response) => {
+      response.json().then((responseData) => {
+        const getApiComments = responseData.comments.map((comment) => {
+          return {
+            author: comment.author.name,
             date: dateString,
-            likes: UserLikes,
-            userLike: false,
-            paint: '',
-        })
+            likes: comment.likes,
+            isLiked: false,
+            text: comment.text,
+          };
+        });
+        Users = getApiComments;
+				renderComments();
+				});
+			});		
         UserName.value = '';
         UserComment.value = '';
     }
