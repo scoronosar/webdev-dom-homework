@@ -117,8 +117,12 @@ ButtonElement.addEventListener("click", () => {
           console.log(response.status);
           if (response.status === 400) {
             preLoaderText.textContent = "";
-            throw new Error(alert("Имя и комментарий должны быть длиннее 3 символов"));
+            throw new Error();
           } 
+          if (response.status === 500){
+            preLoaderText.textContent = "";
+            throw new Error();
+          }
           else {
             UserName.value = '';
             UserComment.value = '';
@@ -129,6 +133,14 @@ ButtonElement.addEventListener("click", () => {
             if (error === "TypeError: Failed to fetch") {
               preLoaderText.textContent = "";
               alert("Проблемы с интернетом");
+            }
+            if (error === "400"){
+              preLoaderText.textContent = "";
+              alert("Имя и комментарий должны быть длиннее 3 символов");
+            }
+            if (error === "500"){
+              preLoaderText.textContent = "";
+              alert("forceError: true");
             }
             else {
               ButtonElement.disabled = false;
