@@ -1,5 +1,6 @@
 import {ListElement, Users} from './main.js';
 import {likes} from './likes.js';
+import{initReplayClickListener} from './replay.js';
 
 const renderComments = () => {
     const UsersHTML = Users.map((item, index) => {
@@ -24,6 +25,7 @@ const renderComments = () => {
 `})
         .join('');
         ListElement.innerHTML = UsersHTML;
+        initReplayClickListener();
         likes();
 };
 
