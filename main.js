@@ -23,8 +23,6 @@ const dateString = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTi
 
 let Users = [];
 
-  likes();
-
 renderComments();
 
 
@@ -117,11 +115,11 @@ ButtonElement.addEventListener("click", () => {
           console.log(response.status);
           if (response.status === 400) {
             preLoaderText.textContent = "";
-            throw new Error();
+            throw new Error("400");
           } 
           if (response.status === 500){
             preLoaderText.textContent = "";
-            throw new Error();
+            throw new Error("500");
           }
           else {
             UserName.value = '';
@@ -140,7 +138,7 @@ ButtonElement.addEventListener("click", () => {
             }
             if (error === "500"){
               preLoaderText.textContent = "";
-              alert("forceError: true");
+              alert("проблемы с сервером");
             }
             else {
               ButtonElement.disabled = false;

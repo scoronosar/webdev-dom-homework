@@ -25,8 +25,8 @@ const renderComments = () => {
 `})
         .join('');
         ListElement.innerHTML = UsersHTML;
-        initReplayClickListener();
         likes();
+        initReplayClickListener();
 };
 
 export {renderComments};
