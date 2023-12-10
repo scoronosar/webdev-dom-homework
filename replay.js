@@ -1,12 +1,14 @@
-import {commentsToAnswer, UserComment, Users} from './main.js';
+export const initReplayClickListener = (UserComment, Users, ListElement, rerender) => {
 
-const initReplayClickListener = () => {
+  const commentsToAnswer = document.querySelectorAll(".comment")
+  
   for (const commentToAnswer of commentsToAnswer) {
     commentToAnswer.addEventListener("click", () => {
-      const index = commentToAnswer.dataset.index;
-      UserComment.value = `${Users[index].comment}\n${Users[index].name},\n`;
-    });
+      const index = commentToAnswer.querySelector('.like-button').dataset.index
+      UserComment.value = `${Users[index].text}\n${Users[index].author}\n\n`
+    })
   }
-}
 
-export {initReplayClickListener}
+  false && rerender(ListElement, Users)
+
+}
