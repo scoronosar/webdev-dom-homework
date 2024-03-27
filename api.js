@@ -1,4 +1,3 @@
-const userUrl = "https://wedev-api.sky.pro/api/user/login"
 import { dateString, Users , SetUsers, preLoaderText, ListElement } from "./main.js";
 import { renderComments} from "./render-comments.js";
 
@@ -58,7 +57,7 @@ export const commentPostFetch = (UserName,UserComment) => {
   fetch("https://wedev-api.sky.pro/api/v2/sayfiddinov-aliakbar/comments", {
               method: "POST",
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
               },
               body: JSON.stringify({
                 name: UserName.value.replaceAll("<", "&lt").replaceAll(">", "&gt"),

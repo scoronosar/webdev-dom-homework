@@ -2,6 +2,7 @@ import { likes } from "./likes.js"
 import { ListElement, UserComment , appElement ,SetUsers , Users, preLoaderText } from "./main.js"
 import { initReplayClickListener } from "./replay.js"
 import { renderlogin, User} from "./login.js"
+import { addcomment } from "./commentsPost.js"
 
 export const Container = document.getElementById('comments-container')
 const loginLink = `Чтобы добавить комментарий <a href="#" class="login-link-main" id = "login-link-main">авторизуйтесь</a>`
@@ -51,6 +52,7 @@ export const renderComments = () => {
       ListElement, 
       renderComments
     )
+    addcomment()
   }else{
     renderlogin() 
   }
