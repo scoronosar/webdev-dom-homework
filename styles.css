@@ -12,6 +12,7 @@ body {
     padding-bottom: 200px;
     background: #202020;
     min-height: 100vh;
+    gap: 32px;
   }
 
   .comments,
@@ -92,7 +93,7 @@ body {
   }
 
   .add-form {
-    padding: 20px;
+    padding: 16px;
     margin-top: 48px;
     display: flex;
     flex-direction: column;
@@ -109,6 +110,7 @@ body {
   .add-form-name {
     width: 300px;
     padding: 11px 22px;
+    background-color: #8C8597;
   }
 
   .add-form-text {
@@ -135,3 +137,10 @@ body {
   .add-form-button:hover {
     opacity: 0.9;
   }
+  .login-link{
+    padding-top: 16px;
+  }
+  .login-link-main{
+    color: white;
+  }
+  
